@@ -2,10 +2,6 @@
 
 A Windows XP-themed embed generator that creates stunning fullscreen lava backgrounds for CRM systems and web applications. Features an authentic retro interface with modern functionality.
 
-![Windows XP Theme](https://img.shields.io/badge/Theme-Windows%20XP-blue?style=flat-square)
-![Mobile Responsive](https://img.shields.io/badge/Mobile-Responsive-green?style=flat-square)
-![Drag & Drop](https://img.shields.io/badge/Draggable-Window-orange?style=flat-square)
-
 ## ✨ Features
 
 ### 🎨 **Background Presets**
@@ -192,17 +188,3 @@ The interface recreates authentic Windows XP elements:
 3. Commit changes: `git commit -am 'Add new preset'`
 4. Push to branch: `git push origin feature/new-preset`
 5. Submit a Pull Request
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 🔗 Links
-
-- **Repository:** [GitHub](https://github.com/Poupun/LavaBackground-Generator)
-- **Demo:** [Live Demo](https://yoursite.com/lavaembed-generator)
-- **Issues:** [Report Bugs](https://github.com/Poupun/LavaBackground-Generator/issues)
-
----
-
-**Made with 💙 for the nostalgia of Windows XP and the beauty of lava animations**
