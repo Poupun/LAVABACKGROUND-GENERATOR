@@ -61,6 +61,18 @@ body {
     z-index: 10;
 }
 
+/* Mobile positioning */
+@media (max-width: 768px) {
+    .xp-window {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        width: auto;
+        max-width: none;
+    }
+}
+
 @keyframes xpWindowOpen {
     0% {
         transform: scale(0.9);
@@ -85,6 +97,15 @@ body {
     font-size: 11px;
     cursor: move;
     user-select: none;
+    touch-action: none; /* Prevent scrolling on mobile when dragging */
+}
+
+@media (max-width: 768px) {
+    .xp-titlebar {
+        padding: 8px 10px;
+        font-size: 12px;
+        min-height: 40px; /* Larger touch target */
+    }
 }
 
 .xp-title {
@@ -113,6 +134,14 @@ body {
     font-family: 'Marlett', sans-serif;
 }
 
+@media (max-width: 768px) {
+    .xp-btn {
+        width: 24px;
+        height: 22px;
+        font-size: 12px;
+    }
+}
+
 .xp-btn:hover {
     background: linear-gradient(to bottom, #eee 0%, #ccc 50%, #aaa 100%);
 }
@@ -138,6 +167,13 @@ body {
     min-height: 300px;
 }
 
+@media (max-width: 768px) {
+    .xp-content {
+        padding: 16px;
+        min-height: auto;
+    }
+}
+
 .xp-header {
     margin-bottom: 16px;
     text-align: center;
@@ -156,12 +192,24 @@ body {
     text-align: center;
 }
 
+@media (max-width: 768px) {
+    .xp-form-group {
+        margin-bottom: 20px;
+    }
+}
+
 /* XP Preset Section */
 .xp-preset-section {
     margin-bottom: 16px;
     border: 1px inset #ccc;
     background: #f5f5f5;
     padding: 8px;
+}
+
+@media (max-width: 768px) {
+    .xp-preset-section {
+        padding: 12px;
+    }
 }
 
 .xp-preset-header {
@@ -177,11 +225,31 @@ body {
     border: 1px outset #ccc;
 }
 
+@media (max-width: 768px) {
+    .xp-preset-header {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+}
+
 .xp-preset-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
     margin-top: 8px;
+}
+
+@media (max-width: 480px) {
+    .xp-preset-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 768px) and (min-width: 481px) {
+    .xp-preset-grid {
+        gap: 12px;
+    }
 }
 
 .xp-preset-item {
@@ -191,6 +259,13 @@ body {
     cursor: pointer;
     text-align: center;
     transition: all 0.1s ease;
+}
+
+@media (max-width: 768px) {
+    .xp-preset-item {
+        padding: 12px;
+        min-height: 80px; /* Larger touch target */
+    }
 }
 
 .xp-preset-item:hover:not(.disabled) {
@@ -221,6 +296,14 @@ body {
     border: 1px solid #999;
     position: relative;
     overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .xp-preset-preview {
+        width: 60px;
+        height: 45px;
+        margin: 0 auto 8px;
+    }
 }
 
 .preset-lava-orange {
@@ -260,6 +343,12 @@ body {
     font-weight: normal;
 }
 
+@media (max-width: 768px) {
+    .xp-preset-label {
+        font-size: 12px;
+    }
+}
+
 .xp-button {
     background: linear-gradient(to bottom, #f8f8f8 0%, #e8e8e8 50%, #d8d8d8 100%);
     border: 1px outset #ccc;
@@ -273,6 +362,15 @@ body {
     gap: 6px;
     min-width: 200px;
     justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .xp-button {
+        padding: 12px 20px;
+        font-size: 14px;
+        min-width: 250px;
+        min-height: 44px; /* iOS touch target recommendation */
+    }
 }
 
 .xp-button:hover {
@@ -385,17 +483,28 @@ body {
 
 /* Responsive */
 @media (max-width: 768px) {
-    .xp-window {
-        width: 90%;
-        min-width: 300px;
+    body {
+        font-size: 12px;
     }
     
-    .xp-content {
-        padding: 8px;
+    .container {
+        padding: 0;
     }
     
-    .xp-button {
-        min-width: 150px;
-        font-size: 10px;
+    .xp-header h2 {
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+    
+    .xp-code-block {
+        font-size: 11px;
+        padding: 12px;
+        min-height: 100px;
+    }
+    
+    .xp-copy-btn {
+        padding: 6px 12px;
+        font-size: 11px;
+        min-height: 32px;
     }
 }

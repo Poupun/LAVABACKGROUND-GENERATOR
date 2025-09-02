@@ -16,7 +16,7 @@
         <div class="xp-window">
             <div class="xp-titlebar">
                 <div class="xp-title">
-                    <i class="fas fa-fire-flame-curved"></i> Lava Embed Generator
+                    <i class="fas fa-fire-flame-curved"></i> Lava Background Generator
                 </div>
                 <div class="xp-controls">
                     <button class="xp-btn minimize">_</button>
@@ -27,7 +27,7 @@
             
             <div class="xp-content">
                 <div class="xp-header">
-                    <h2>Create stunning fullscreen lava backgrounds for your CRM</h2>
+                    <h2>Create stunning lava backgrounds for your app</h2>
                 </div>
 
                 <!-- Preset Selection -->
@@ -68,7 +68,7 @@
 
                 <div id="resultContainer" class="xp-code-container">
                     <div class="xp-code-header">
-                        <i class="fas fa-code"></i> YOUR FULLSCREEN EMBED CODE
+                        <i class="fas fa-code"></i> YOUR EMBED CODE
                     </div>
                     <div class="xp-code-wrapper">
                         <button class="xp-copy-btn" onclick="copyToClipboard()">Copy</button>
@@ -144,23 +144,54 @@
             let xOffset = 0;
             let yOffset = 0;
 
+            // Mouse events
             titleBar.addEventListener('mousedown', dragStart);
             document.addEventListener('mousemove', dragMove);
             document.addEventListener('mouseup', dragEnd);
 
+            // Touch events for mobile
+            titleBar.addEventListener('touchstart', touchStart, { passive: false });
+            document.addEventListener('touchmove', touchMove, { passive: false });
+            document.addEventListener('touchend', touchEnd);
+
+            function getEventCoords(e) {
+                // Handle both mouse and touch events
+                if (e.touches && e.touches[0]) {
+                    return {
+                        clientX: e.touches[0].clientX,
+                        clientY: e.touches[0].clientY
+                    };
+                }
+                return {
+                    clientX: e.clientX,
+                    clientY: e.clientY
+                };
+            }
+
             function dragStart(e) {
+                startDrag(e);
+            }
+
+            function touchStart(e) {
+                e.preventDefault(); // Prevent scrolling
+                startDrag(e);
+            }
+
+            function startDrag(e) {
                 // Don't drag if clicking on window controls
                 if (e.target.classList.contains('xp-btn')) {
                     return;
                 }
 
+                const coords = getEventCoords(e);
+                
                 // Get current position from the element's style or computed position
                 const rect = xpWindow.getBoundingClientRect();
                 xOffset = rect.left;
                 yOffset = rect.top;
 
-                initialX = e.clientX - xOffset;
-                initialY = e.clientY - yOffset;
+                initialX = coords.clientX - xOffset;
+                initialY = coords.clientY - yOffset;
 
                 if (e.target === titleBar || e.target.closest('.xp-titlebar')) {
                     isDragging = true;
@@ -169,11 +200,20 @@
             }
 
             function dragMove(e) {
+                moveDrag(e);
+            }
+
+            function touchMove(e) {
+                e.preventDefault(); // Prevent scrolling
+                moveDrag(e);
+            }
+
+            function moveDrag(e) {
                 if (isDragging) {
-                    e.preventDefault();
+                    const coords = getEventCoords(e);
                     
-                    currentX = e.clientX - initialX;
-                    currentY = e.clientY - initialY;
+                    currentX = coords.clientX - initialX;
+                    currentY = coords.clientY - initialY;
 
                     xOffset = currentX;
                     yOffset = currentY;
@@ -184,6 +224,14 @@
             }
 
             function dragEnd(e) {
+                endDrag(e);
+            }
+
+            function touchEnd(e) {
+                endDrag(e);
+            }
+
+            function endDrag(e) {
                 initialX = currentX;
                 initialY = currentY;
 
