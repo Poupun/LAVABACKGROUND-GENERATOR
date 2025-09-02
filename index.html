@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lava Background Embed Generator</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="lava-background">
+        <iframe src="lavaembed.html" frameborder="0"></iframe>
+    </div>
+    
+    <div class="container">
+        <div class="xp-window">
+            <div class="xp-titlebar">
+                <div class="xp-title">
+                    <i class="fas fa-fire-flame-curved"></i> Lava Embed Generator
+                </div>
+                <div class="xp-controls">
+                    <button class="xp-btn minimize">_</button>
+                    <button class="xp-btn maximize">□</button>
+                    <button class="xp-btn close">×</button>
+                </div>
+            </div>
+            
+            <div class="xp-content">
+                <div class="xp-header">
+                    <h2>Create stunning fullscreen lava backgrounds for your CRM</h2>
+                </div>
+
+                <!-- Preset Selection -->
+                <div class="xp-preset-section">
+                    <div class="xp-preset-header">
+                        <i class="fas fa-palette"></i> Background Presets
+                    </div>
+                    <div class="xp-preset-grid">
+                        <div class="xp-preset-item active" data-preset="ticket-hub">
+                            <div class="xp-preset-preview">
+                                <div class="preset-lava-orange"></div>
+                            </div>
+                            <div class="xp-preset-label">Ticket Hub</div>
+                        </div>
+                        <div class="xp-preset-item" data-preset="dashboard">
+                            <div class="xp-preset-preview">
+                                <div class="preset-lava-blue"></div>
+                            </div>
+                            <div class="xp-preset-label">Dashboard</div>
+                        </div>
+                        <div class="xp-preset-item disabled" data-preset="coming-soon">
+                            <div class="xp-preset-preview">
+                                <div class="preset-coming-soon">?</div>
+                            </div>
+                            <div class="xp-preset-label">Coming Soon...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="embedForm">
+                    <div class="xp-form-group">
+                        <button type="submit" class="xp-button">
+                            <i class="fas fa-code"></i>
+                            Generate Fullscreen Embed Code
+                        </button>
+                    </div>
+                </form>
+
+                <div id="resultContainer" class="xp-code-container">
+                    <div class="xp-code-header">
+                        <i class="fas fa-code"></i> YOUR FULLSCREEN EMBED CODE
+                    </div>
+                    <div class="xp-code-wrapper">
+                        <button class="xp-copy-btn" onclick="copyToClipboard()">Copy</button>
+                        <textarea id="embedCode" class="xp-code-block" readonly></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Current selected preset
+        let currentPreset = 'ticket-hub';
+        
+        // Preset configurations
+        const presets = {
+            'ticket-hub': {
+                file: 'lavaembed.html',
+                name: 'Ticket Hub'
+            },
+            'dashboard': {
+                file: 'embedlava-blue.html',
+                name: 'Dashboard'
+            },
+            'coming-soon': {
+                file: null,
+                name: 'Coming Soon...'
+            }
+        };
+
+        // Initialize preset selection
+        document.addEventListener('DOMContentLoaded', function() {
+            const presetItems = document.querySelectorAll('.xp-preset-item');
+            
+            presetItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const preset = this.dataset.preset;
+                    
+                    // Skip if disabled
+                    if (this.classList.contains('disabled')) {
+                        return;
+                    }
+                    
+                    // Update active state
+                    presetItems.forEach(p => p.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update current preset
+                    currentPreset = preset;
+                    
+                    // Hide embed code section when preset changes
+                    const resultContainer = document.getElementById('resultContainer');
+                    resultContainer.style.display = 'none';
+                    
+                    // Update background iframe
+                    updateBackgroundIframe();
+                });
+            });
+
+            // Initialize draggable functionality
+            initializeDraggable();
+        });
+
+        // Make window draggable
+        function initializeDraggable() {
+            const titleBar = document.querySelector('.xp-titlebar');
+            const xpWindow = document.querySelector('.xp-window');
+            let isDragging = false;
+            let currentX;
+            let currentY;
+            let initialX;
+            let initialY;
+            let xOffset = 0;
+            let yOffset = 0;
+
+            titleBar.addEventListener('mousedown', dragStart);
+            document.addEventListener('mousemove', dragMove);
+            document.addEventListener('mouseup', dragEnd);
+
+            function dragStart(e) {
+                // Don't drag if clicking on window controls
+                if (e.target.classList.contains('xp-btn')) {
+                    return;
+                }
+
+                // Get current position from the element's style or computed position
+                const rect = xpWindow.getBoundingClientRect();
+                xOffset = rect.left;
+                yOffset = rect.top;
+
+                initialX = e.clientX - xOffset;
+                initialY = e.clientY - yOffset;
+
+                if (e.target === titleBar || e.target.closest('.xp-titlebar')) {
+                    isDragging = true;
+                    titleBar.style.cursor = 'grabbing';
+                }
+            }
+
+            function dragMove(e) {
+                if (isDragging) {
+                    e.preventDefault();
+                    
+                    currentX = e.clientX - initialX;
+                    currentY = e.clientY - initialY;
+
+                    xOffset = currentX;
+                    yOffset = currentY;
+
+                    // No limitations - allow dragging anywhere
+                    setPosition(xOffset, yOffset, xpWindow);
+                }
+            }
+
+            function dragEnd(e) {
+                initialX = currentX;
+                initialY = currentY;
+
+                isDragging = false;
+                titleBar.style.cursor = 'move';
+            }
+
+            function setPosition(xPos, yPos, el) {
+                el.style.left = `${xPos}px`;
+                el.style.top = `${yPos}px`;
+                el.style.right = 'auto'; // Clear the right positioning
+            }
+        }
+
+        // Update the background iframe based on current preset
+        function updateBackgroundIframe() {
+            const iframe = document.querySelector('.lava-background iframe');
+            const presetConfig = presets[currentPreset];
+            
+            if (presetConfig.file) {
+                iframe.src = presetConfig.file;
+            }
+        }
+
+        // Get current domain and path dynamically
+        function getLavaEmbedUrl() {
+            const currentUrl = window.location.href;
+            const baseUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/') + 1);
+            const presetConfig = presets[currentPreset];
+            return baseUrl + presetConfig.file;
+        }
+
+        // Form submission
+        document.getElementById('embedForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            generateEmbedCode();
+        });
+
+        function generateEmbedCode() {
+            const presetConfig = presets[currentPreset];
+            
+            // Check if preset has a file
+            if (!presetConfig.file) {
+                alert('This preset is not available yet. Please select another preset.');
+                return;
+            }
+            
+            // Get the dynamic URL for the selected preset
+            const lavaEmbedUrl = getLavaEmbedUrl();
+            
+            // Generate fullscreen embed code with dynamic URL
+            const embedCode = `<iframe src="${lavaEmbedUrl}" width="100%" height="100%" frameborder="0" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none;"></iframe>`;
+
+            // Display result
+            document.getElementById('embedCode').textContent = embedCode;
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.style.display = 'block';
+            
+            // Smooth scroll to result
+            setTimeout(() => {
+                resultContainer.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'nearest' 
+                });
+            }, 100);
+        }
+
+        async function copyToClipboard() {
+            const code = document.getElementById('embedCode').textContent;
+            const copyBtn = document.querySelector('.xp-copy-btn');
+            
+            try {
+                await navigator.clipboard.writeText(code);
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                copyBtn.classList.add('copied');
+                
+                setTimeout(() => {
+                    copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            } catch (err) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = code;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                copyBtn.classList.add('copied');
+                
+                setTimeout(() => {
+                    copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            }
+        }
+
+        // Add XP-style window interactions - only close button is functional
+        document.querySelector('.close').addEventListener('click', () => {
+            if (confirm('Are you sure you want to close this window?')) {
+                window.close();
+            }
+        });
+
+        // Minimize and maximize buttons are just aesthetic - no functionality
+    </script>
+</body>
+</html>
